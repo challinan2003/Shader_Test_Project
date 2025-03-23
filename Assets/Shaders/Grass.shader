@@ -2,13 +2,17 @@ Shader "Unlit/Grass"
 {
     Properties
     {
+        _BottomColor ("Bottom Color", Color) = (1,1,1)
+        _MiddleColor ("Middle Color", Color) = (1,1,1)
+        _TopColor ("Top Color", Color) = (1,1,1)
 
     }
     SubShader
     {
         Tags 
         { 
-            "RenderType"="Opaque"
+            "RenderType"="Transparent"
+            "Queue" = "Transparent"
         }
         LOD 100
 
@@ -21,9 +25,13 @@ Shader "Unlit/Grass"
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "UnityCG.cginc"
+            #pragma target 4.5
 
-            struct appdata
+            #include "UnityCG.cginc"
+            #include "UnityPBSLighting.cginc"
+            #include "AutoLight.cginc"
+
+            struct vertexData
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
@@ -33,12 +41,15 @@ Shader "Unlit/Grass"
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
+                float4 worldPos : TEXCOORD1;
+                float4 chunkNumber : TEXCOORD2;
+                float noiseValue : TEXCOORD3;
             };
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
-            v2f vert (appdata v)
+            v2f vert (vertexData v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
@@ -48,7 +59,7 @@ Shader "Unlit/Grass"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float4 color = float4(i.uv.r, i.uv.g, 1, 1);
+                float4 color = float4(i.uv.r, i.uv.g, 0, 1);
                 return color;
             }
             ENDCG
