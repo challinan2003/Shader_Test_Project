@@ -24,8 +24,6 @@ Shader "Unlit/Grass"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_instancing
-            #pragma instancing_options renderinglayer
 
             #pragma target 4.5
 
@@ -41,12 +39,20 @@ Shader "Unlit/Grass"
 
             struct v2f
             {
-                float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
+                float2 uv : TEXCOORD0;
                 float4 worldPos : TEXCOORD1;
                 float4 chunkNumber : TEXCOORD2;
                 float noiseValue : TEXCOORD3;
             };
+
+            //Create a struct so that a noise texture can be sampled across the grass.
+            struct GrassWorldSpace
+            {
+                float4 position;
+                float2 uv;
+                float displacement;
+            }
 
             sampler2D _MainTex;
             float4 _MainTex_ST;

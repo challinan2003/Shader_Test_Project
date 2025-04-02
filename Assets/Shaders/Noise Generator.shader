@@ -9,11 +9,16 @@ Shader "Unlit/Noise Generator"
         Tags { "RenderType"="Opaque" }
         LOD 100
 
+        Cull Off
+        ZWrite On
+
         Pass
         {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_instancing
+            #pragma instancing_options renderinglayer
 
             #include "UnityCG.cginc"
             #define TAU 6.283185307179586
